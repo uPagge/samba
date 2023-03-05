@@ -1,7 +1,7 @@
 ---
 kind: pipeline
 type: docker
-name: docker-graalvm-native
+name: build-and-push-develop
 
 steps:
 
@@ -26,13 +26,56 @@ steps:
       - echo "$DOCKER_REGISTRY_TOKEN" | docker login docker.io --username $DOCKER_REGISTRY_USER --password-stdin
       - echo "$STRUCHKOV_DOCKER_REGISTRY_TOKEN" | docker login git.struchkov.dev --username $DOCKER_REGISTRY_USER --password-stdin
       - docker buildx create --use
-      - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t "$DOCKER_IMAGE_NAME:new" -t "git.struchkov.dev/$STRUCHKOV_DOCKER_IMAGE_NAME:latest" .
-#      - docker build -t "$DOCKER_IMAGE_NAME:latest" .
-#      - docker push "$DOCKER_IMAGE_NAME:latest"
+      - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t "$DOCKER_IMAGE_NAME:develop" -t "git.struchkov.dev/$STRUCHKOV_DOCKER_IMAGE_NAME:develop" .
 
 trigger:
   branch:
-    - master
+    - develop
+
+services:
+  - name: docker
+    image: docker:20.10.22-dind-alpine3.17
+    privileged: true
+    volumes:
+      - name: dockersock
+        path: /var/run
+
+volumes:
+  - name: dockersock
+    temp: {}
+---
+kind: pipeline
+type: docker
+name: build-and-push-release
+
+steps:
+
+  - name: docker build an publish
+    image: upagge/docker-buildx:latest
+    environment:
+      DOCKER_REGISTRY_TOKEN:
+        from_secret: DOCKER_REGISTRY_TOKEN
+      DOCKER_IMAGE_NAME:
+        from_secret: DOCKER_IMAGE_NAME
+      DOCKER_REGISTRY_USER:
+        from_secret: DOCKER_REGISTRY_USER
+      STRUCHKOV_DOCKER_IMAGE_NAME:
+        from_secret: STRUCHKOV_DOCKER_IMAGE_NAME
+      STRUCHKOV_DOCKER_REGISTRY_TOKEN:
+        from_secret: STRUCHKOV_DOCKER_REGISTRY_TOKEN
+    volumes:
+      - name: dockersock
+        path: /var/run
+    commands:
+      - sleep 15
+      - echo "$DOCKER_REGISTRY_TOKEN" | docker login docker.io --username $DOCKER_REGISTRY_USER --password-stdin
+      - echo "$STRUCHKOV_DOCKER_REGISTRY_TOKEN" | docker login git.struchkov.dev --username $DOCKER_REGISTRY_USER --password-stdin
+      - docker buildx create --use
+      - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t "$DOCKER_IMAGE_NAME:latest" -t "$DOCKER_IMAGE_NAME:$DRONE_TAG" -t "git.struchkov.dev/$STRUCHKOV_DOCKER_IMAGE_NAME:latest" -t "git.struchkov.dev/$STRUCHKOV_DOCKER_IMAGE_NAME:$DRONE_TAG" .
+
+trigger:
+  ref:
+    - refs/tags/*
 
 services:
   - name: docker
@@ -47,6 +90,6 @@ volumes:
     temp: {}
 ---
 kind: signature
-hmac: 8ca861365f61439945fec65cdf54ce885efa286b10e323aabac3ad13b629f3b0
+hmac: 8cbec230fea28e3ebdaefe0d8d13e9bef855e7cc7207df01f7f7d8b3e80c803d
 
 ...
