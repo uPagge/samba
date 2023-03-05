@@ -1,5 +1,5 @@
 FROM alpine
-MAINTAINER David Personette <dperson@gmail.com>
+MAINTAINER Struchkov Mark <mark@struchkov.dev>
 
 # Install samba
 RUN apk --no-cache --no-progress upgrade && \
