@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:latest
 MAINTAINER Struchkov Mark <mark@struchkov.dev>
 
 # Install samba
