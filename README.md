@@ -4,8 +4,13 @@
 
 Samba docker container
 
-# Fork
+# Fork changes
 This repository is a fork of the https://github.com/dperson/samba project, since dperson/samba stopped being updated a long time ago. This version contains the current samba for the current version of alpine.
+
+## Samba Version
+The image tags correspond to the version of samba that is in the container. Use the need tag if you need the version you need. The latest stable version is always tagged latest, and the development version is always tagged develop.
+
+At the moment, the current version of samba will be the one that is available for installation in the alpine image. So if you see that samba has new versions, but they are still not available in this image, it most likely means that the samba version has not been updated in alpine.
 
 # What is Samba?
 
