@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM hub.docker.struchkov.dev/alpine:latest
 MAINTAINER Struchkov Mark <mark@struchkov.dev>
 
 # Install samba

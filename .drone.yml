@@ -6,7 +6,7 @@ name: build-and-push-develop
 steps:
 
   - name: docker build an publish
-    image: upagge/docker-buildx:latest
+    image: docker.struchkov.dev/docker-buildx:latest
     environment:
       DOCKER_REGISTRY_TOKEN:
         from_secret: DOCKER_REGISTRY_TOKEN
@@ -23,10 +23,10 @@ steps:
         path: /var/run
     commands:
       - sleep 15
-      - echo "$DOCKER_REGISTRY_TOKEN" | docker login docker.io --username $DOCKER_REGISTRY_USER --password-stdin
-      - echo "$STRUCHKOV_DOCKER_REGISTRY_TOKEN" | docker login git.struchkov.dev --username $DOCKER_REGISTRY_USER --password-stdin
+      - echo "$DOCKER_REGISTRY_TOKEN" | docker login docker.struchkov.dev --username $DOCKER_REGISTRY_USER --password-stdin
+      - echo "$DOCKER_REGISTRY_TOKEN" | docker login hub.docker.struchkov.dev --username $DOCKER_REGISTRY_USER --password-stdin
       - docker buildx create --use
-      - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t "$DOCKER_IMAGE_NAME:develop" -t "git.struchkov.dev/$STRUCHKOV_DOCKER_IMAGE_NAME:develop" .
+      - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t "$DOCKER_IMAGE_NAME:develop" -t "docker.struchkov.dev/samba:develop" .
 
 trigger:
   branch:
@@ -34,7 +34,7 @@ trigger:
 
 services:
   - name: docker
-    image: docker:20.10.22-dind-alpine3.17
+    image: hub.docker.struchkov.dev/docker:24.0.7-dind-alpine3.18
     privileged: true
     volumes:
       - name: dockersock
@@ -43,6 +43,9 @@ services:
 volumes:
   - name: dockersock
     temp: {}
+
+image_pull_secrets:
+  - DOCKER_AUTH
 ---
 kind: pipeline
 type: docker
@@ -51,7 +54,7 @@ name: build-and-push-release
 steps:
 
   - name: docker build an publish
-    image: upagge/docker-buildx:latest
+    image: docker.struchkov.dev/docker-buildx:latest
     environment:
       DOCKER_REGISTRY_TOKEN:
         from_secret: DOCKER_REGISTRY_TOKEN
@@ -68,10 +71,10 @@ steps:
         path: /var/run
     commands:
       - sleep 15
-      - echo "$DOCKER_REGISTRY_TOKEN" | docker login docker.io --username $DOCKER_REGISTRY_USER --password-stdin
-      - echo "$STRUCHKOV_DOCKER_REGISTRY_TOKEN" | docker login git.struchkov.dev --username $DOCKER_REGISTRY_USER --password-stdin
+      - echo "$DOCKER_REGISTRY_TOKEN" | docker login docker.struchkov.dev --username $DOCKER_REGISTRY_USER --password-stdin
+      - echo "$DOCKER_REGISTRY_TOKEN" | docker login hub.docker.struchkov.dev --username $DOCKER_REGISTRY_USER --password-stdin
       - docker buildx create --use
-      - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t "$DOCKER_IMAGE_NAME:latest" -t "$DOCKER_IMAGE_NAME:$DRONE_TAG" -t "git.struchkov.dev/$STRUCHKOV_DOCKER_IMAGE_NAME:latest" -t "git.struchkov.dev/$STRUCHKOV_DOCKER_IMAGE_NAME:$DRONE_TAG" .
+      - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t "docker.struchkov.dev/samba:latest" -t "docker.struchkov.dev/samba:$DRONE_TAG" .
 
 trigger:
   ref:
@@ -79,7 +82,7 @@ trigger:
 
 services:
   - name: docker
-    image: docker:20.10.22-dind-alpine3.17
+    image: hub.docker.struchkov.dev/docker:24.0.7-dind-alpine3.18
     privileged: true
     volumes:
       - name: dockersock
@@ -88,8 +91,11 @@ services:
 volumes:
   - name: dockersock
     temp: {}
+
+image_pull_secrets:
+  - DOCKER_AUTH
 ---
 kind: signature
-hmac: 8cbec230fea28e3ebdaefe0d8d13e9bef855e7cc7207df01f7f7d8b3e80c803d
+hmac: 7b4be36e3ae47ce5d1ccc6eebcaf4c0cecb9332f5ca653777b0fc23e0446e360
 
 ...
