@@ -10,14 +10,8 @@ steps:
     environment:
       DOCKER_REGISTRY_TOKEN:
         from_secret: DOCKER_REGISTRY_TOKEN
-      DOCKER_IMAGE_NAME:
-        from_secret: DOCKER_IMAGE_NAME
       DOCKER_REGISTRY_USER:
         from_secret: DOCKER_REGISTRY_USER
-      STRUCHKOV_DOCKER_IMAGE_NAME:
-        from_secret: STRUCHKOV_DOCKER_IMAGE_NAME
-      STRUCHKOV_DOCKER_REGISTRY_TOKEN:
-        from_secret: STRUCHKOV_DOCKER_REGISTRY_TOKEN
     volumes:
       - name: dockersock
         path: /var/run
@@ -58,14 +52,8 @@ steps:
     environment:
       DOCKER_REGISTRY_TOKEN:
         from_secret: DOCKER_REGISTRY_TOKEN
-      DOCKER_IMAGE_NAME:
-        from_secret: DOCKER_IMAGE_NAME
       DOCKER_REGISTRY_USER:
         from_secret: DOCKER_REGISTRY_USER
-      STRUCHKOV_DOCKER_IMAGE_NAME:
-        from_secret: STRUCHKOV_DOCKER_IMAGE_NAME
-      STRUCHKOV_DOCKER_REGISTRY_TOKEN:
-        from_secret: STRUCHKOV_DOCKER_REGISTRY_TOKEN
     volumes:
       - name: dockersock
         path: /var/run
@@ -96,6 +84,6 @@ image_pull_secrets:
   - DOCKER_AUTH
 ---
 kind: signature
-hmac: 84c338aed66c77616335bcb824179e3e4e7e38d66217a86b34bc9cc23c1877b8
+hmac: bf70dbc39853ab693c0a6c788975244211a0dbdf8b83a8447ca53cdf5ba39b29
 
 ...
