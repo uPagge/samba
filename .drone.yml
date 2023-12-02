@@ -26,7 +26,7 @@ steps:
       - echo "$DOCKER_REGISTRY_TOKEN" | docker login docker.struchkov.dev --username $DOCKER_REGISTRY_USER --password-stdin
       - echo "$DOCKER_REGISTRY_TOKEN" | docker login hub.docker.struchkov.dev --username $DOCKER_REGISTRY_USER --password-stdin
       - docker buildx create --use
-      - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t "$DOCKER_IMAGE_NAME:develop" -t "docker.struchkov.dev/samba:develop" .
+      - docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t "docker.struchkov.dev/samba:develop" .
 
 trigger:
   branch:
@@ -96,6 +96,6 @@ image_pull_secrets:
   - DOCKER_AUTH
 ---
 kind: signature
-hmac: 7b4be36e3ae47ce5d1ccc6eebcaf4c0cecb9332f5ca653777b0fc23e0446e360
+hmac: 84c338aed66c77616335bcb824179e3e4e7e38d66217a86b34bc9cc23c1877b8
 
 ...
