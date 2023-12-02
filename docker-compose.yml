@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   samba:
-    image: upagge/samba
+    image: docker.struchkov.dev/samba
     environment:
       TZ: 'EST5EDT'
     networks:
